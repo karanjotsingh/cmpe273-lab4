@@ -1,9 +1,5 @@
 package edu.sjsu.cmpe.cache.lab4client;
 
-/**
- * Cache Service Interface
- * 
- */
 public interface CacheServiceInterface {
 	public String get(long key);
 
