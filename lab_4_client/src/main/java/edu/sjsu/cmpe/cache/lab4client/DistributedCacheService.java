@@ -12,10 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.CountDownLatch;
 
-/**
- * Distributed cache service
- * 
- */
 public class DistributedCacheService implements CacheServiceInterface {
     private final String cacheServerUrl;
 
@@ -53,6 +49,30 @@ public class DistributedCacheService implements CacheServiceInterface {
     }
     
     @Override
+    public void delete(long key) {
+        HttpResponse<JsonNode> response = null;
+        try {
+            response = Unirest
+                    .delete(this.cacheServerUrl + "/cache/{key}")
+                    .header("accept", "application/json")
+                    .routeParam("key", Long.toString(key))
+                    .asJson();
+        } catch (UnirestException e) {
+            System.err.println(e);
+        }
+
+        System.out.println("response is " + response);
+
+        if (response == null || response.getCode() != 204) {
+            System.out.println("Failed to delete from the cache.");
+        } else 
+        {
+            System.out.println("Deleted " + key + " from " + this.cacheServerUrl);
+        }
+
+    }
+    
+    @Override
     public void put(long key, String value) {
         Future<HttpResponse<JsonNode>> futVal = Unirest.put(this.cacheServerUrl + "/cache/{key}/{value}")
                 .header("accept", "application/json")
@@ -76,29 +96,5 @@ public class DistributedCacheService implements CacheServiceInterface {
                     }
 
                 });
-    }
-
-    @Override
-    public void delete(long key) {
-        HttpResponse<JsonNode> response = null;
-        try {
-            response = Unirest
-                    .delete(this.cacheServerUrl + "/cache/{key}")
-                    .header("accept", "application/json")
-                    .routeParam("key", Long.toString(key))
-                    .asJson();
-        } catch (UnirestException e) {
-            System.err.println(e);
-        }
-
-        System.out.println("response is " + response);
-
-        if (response == null || response.getCode() != 204) {
-            System.out.println("Failed to delete from the cache.");
-        } else 
-        {
-            System.out.println("Deleted " + key + " from " + this.cacheServerUrl);
-        }
-
     }
 }
