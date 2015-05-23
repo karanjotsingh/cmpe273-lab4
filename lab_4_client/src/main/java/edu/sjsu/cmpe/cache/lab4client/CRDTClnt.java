@@ -35,8 +35,6 @@ public class CRDTClnt implements CRDTCBInt {
         serverMap.put("http://localhost:3002", cache_2);
     }
 
-    // Callbacks
-    
     @Override
     public void getFailure(Exception e) {
         System.out.println("The request has failed");
